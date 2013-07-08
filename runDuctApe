@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Setup the project
+dape init
+dape add Rm1021 -c red
+dape add BL225C -c green
+dape add AK83 -c blue
+dape add AK58 -c orange
+
+# Add the genomic data and KAAS outputs
+dgenome add-dir genome/
+dgenome add-ko kegg/AK58.tab kegg/AK83.tab kegg/Rm1021.tab kegg/BL225C.tab
+
+# Pangenome estimation/KEGG mapping
+dgenome start -n 4 -p SinMel_
+
+# Annotate the orthologs w/o KEGG IDs
+dgenome annotate
+
+# Statistics and exports
+dgenome stats > genome_stats.tsv
+dgenome export
+
+# Add the phenomic data
+dphenome add-dir biolog
+
+# Control signal subtraction
+dphenome zero
+
+# AV/parameters calculation (k=5)
+dphenome start -f -n 5
+
+# Curve plots
+dphenome plot
+
+# Activity rings
+dphenome rings
+mv ActivityRing.png ActivityOverall.png
+dphenome rings -o Rm1021 -d 2
+
+# Statistics and exports (including YAML files) 
+dphenome stats -a 3 -d 2 > phenome_stats.tsv
+dphenome export
+
+# Pathway maps
+dape map -d 3
+dape map -a
+
+# Combined genomic/phenomic analysis
+dape start -n 4 -p -t 2
+dape start -a -p
