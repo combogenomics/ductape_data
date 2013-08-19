@@ -1,7 +1,7 @@
 ductape_data
 ============
 
-This repository is intended to make the analysis of DuctApe on four *S. meliloti* strains fully reproducible.
+This repository is intended to make the analysis of DuctApe on the test cases fully reproducible.
 All the necessary input data are provided, as well as a detailed script to run each command used in the analysis.
 
 Requirements
@@ -12,6 +12,8 @@ Requirements
 Howto
 -----
 
-From the command line just type:
+Choose the test set from the directories provided.
+
+Once inside a directory, just type from the command line:
 
     ./runDuctApe
