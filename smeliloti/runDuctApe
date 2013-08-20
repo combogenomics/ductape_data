@@ -22,7 +22,7 @@ dgenome stats > genome_stats.tsv
 dgenome export
 
 # Add the phenomic data
-dphenome add-dir biolog
+dphenome add-dir phenome
 
 # Control signal subtraction
 dphenome zero
