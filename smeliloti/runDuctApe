@@ -48,4 +48,4 @@ dape map -a
 
 # Combined genomic/phenomic analysis
 dape start -n 4 -p -t 2
-dape start -a -p
+dape start -a -p -t 2
