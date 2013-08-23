@@ -27,6 +27,8 @@ dphenome add-dir phenome
 # Control signal subtraction
 dphenome zero
 
+# Parameters calculation and Elbow test to decide the value of k
+dphenome start -e -g
 # AV/parameters calculation (k=5)
 dphenome start -f -n 5
 
