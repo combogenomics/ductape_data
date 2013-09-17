@@ -7,7 +7,7 @@ All the necessary input data are provided, as well as a detailed script to run e
 Requirements
 ------------
 
-* DuctApe v0.10.0 or later
+* DuctApe v0.12.0 or later
 
 Howto
 -----
