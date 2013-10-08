@@ -1,0 +1,56 @@
+#!/usr/bin/python
+'''
+From a OrthoMCL run and an input directory, obtain a pangenome_category file
+'''
+
+import os
+import sys
+
+if len(sys.argv) < 3:
+    print './mp2tsv ORTHOMCLOUTPUT COMPLIANTFASTADIR'
+    sys.exit(1)
+    
+mp, indir = sys.argv[1:3]
+
+infiles = os.listdir(indir)
+
+# Parse MP output
+seen = set()
+pan = {}
+pan1 = {}
+
+for l in open(mp):
+    l = l.strip()
+    o = l.split(':')[0]
+    for p in l.split(':')[1].lstrip().split(' '):
+        seen.add(p)
+    
+        pan[o] = pan.get(o, set())
+        pan1[o] = pan1.get(o, set())
+        pan[o].add(p)
+        pan1[o].add(p.split('|')[0]+'.fasta')
+    
+o = len(pan1.keys()) + 1
+    
+# Add the missing prots
+# Parse ALL the proteins    
+from Bio import SeqIO
+    
+d={}
+for f in infiles:
+    for s in SeqIO.parse(os.path.join(indir, f), 'fasta'):
+        if s.id not in seen:
+            seen.add(s.id)
+
+            pan[o] = set([s.id])
+            pan1[o] = set([f])
+            
+            o += 1
+            
+for o in pan1:
+    if len(pan1[o]) == len(infiles):
+        print '\t'.join([str(x) for x in (o, 'core', '-'.join(pan1[o]))])
+    elif len(pan1[o]) < len(infiles) and len(pan1[o]) > 1:
+        print '\t'.join([str(x) for x in (o, 'accessory', '-'.join(pan1[o]))])
+    elif len(pan1[o]) == 1:
+        print '\t'.join([str(x) for x in (o, 'unique', '-'.join(pan1[o]))])

@@ -1,0 +1,35 @@
+#!/usr/bin/python
+import sys
+
+if len(sys.argv) < 3:
+	print 'python check.py Table_S3.txt 19606_vs_RUH2202.txt'
+	sys.exit(1)
+
+t3, da = sys.argv[1:3]
+
+t = set()
+d = set()
+
+for l in open(t3):
+	t.add(l.strip())
+for l in open(da):
+        d.add(l.strip())
+
+f = open('same.txt','w')
+for p in t.intersection(d):
+	f.write(p+'\n')
+f.close()
+print 'Same: %d'%len(t.intersection(d))
+
+f = open('missed.txt','w')
+for p in t.difference(d):
+        f.write(p+'\n')
+f.close()
+print 'Missed: %d'%len(t.difference(d))
+
+f = open('added.txt','w')
+for p in d.difference(t):
+        f.write(p+'\n')
+f.close()
+print 'Added: %d'%len(d.difference(t))
+

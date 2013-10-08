@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Setup the project
+dape init
+dape add ZM4 -c red
+
+# Add the genomic data and KAAS outputs
+dgenome add-dir genome/
+dgenome add-ko kegg/ZM4.tab
+
+# Pangenome estimation/KEGG mapping
+dgenome start
+
+# Statistics and exports
+dgenome stats > genome_stats.tsv
+dgenome export
+
+# Add the phenomic data
+dphenome add-dir phenome
+
+# Control signal subtraction
+dphenome zero
+
+# Parameters calculation and Elbow test to decide the value of k
+dphenome start -e -g
+# AV/parameters calculation (k=5)
+dphenome start -f -n 6
+
+# Curve plots
+dphenome plot
+
+# Activity rings
+dphenome rings
+
+# Statistics and exports (including YAML files) 
+dphenome stats -a 3 -d 2 > phenome_stats.tsv
+dphenome export
+
+# Pathway maps
+dape map
+
+# Combined genomic/phenomic analysis
+dape start -p -t 2
+
+# List the compounds with AV >= 3
+cat phenome_avg_ZM4.tsv | awk 'BEGIN {FS = "\t"}; {if ($7 >= 3) print $1"\t"$2"\t"$3"\t"$4"\t"$7}' > ZM4_res.tsv
+
+# List compound with AV < 3
+cat phenome_avg_ZM4.tsv | awk 'BEGIN {FS = "\t"}; {if ($7 < 3) print $1"\t"$2"\t"$3"\t"$4"\t"$7}' > ZM4_sens.tsv
+
+# The comparison has to be done by hand, the results are discussed in the manuscript text and in Table_1

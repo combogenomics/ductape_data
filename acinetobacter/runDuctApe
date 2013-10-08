@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# Setup the project
+dape init
+dape add 19606 -c red
+dape add RUH2202 -c green
+dape add RUH2624 -c blue
+dape add SH024 -c orange
+
+# Add the genomic data and KAAS outputs
+dgenome add-dir genome/
+dgenome add-ko kegg/*.tab
+
+# Pangenome estimation/KEGG mapping
+dgenome start -n 4 -p Acin_
+
+# Annotate the orthologs w/o KEGG IDs
+dgenome annotate
+
+# Statistics and exports
+dgenome stats > genome_stats.tsv
+dgenome export
+
+# Add the phenomic data
+dphenome add-dir phenome
+
+# Control signal subtraction
+dphenome zero
+# Signal trimming
+dphenome trim
+
+# Parameters calculation and Elbow test to decide the value of k
+dphenome start -e -g
+# AV/parameters calculation (k=5)
+dphenome start -f -n 6
+
+# Curve plots
+dphenome plot
+
+# Activity rings
+dphenome rings
+mv ActivityRing.png ActivityOverall.png
+dphenome rings -o 19606 -d 2
+
+# Statistics and exports (including YAML files) 
+dphenome stats -a 3 -d 2 > phenome_stats.tsv
+dphenome export
+
+# Pathway maps
+dape map -d 3
+dape map -a
+
+# Combined genomic/phenomic analysis
+dape start -p -t 2.5
+dape start -a -p -t 2.5
+
+# Get the first replica activity to compare with published data
+cat phenome_19606.tsv | awk 'BEGIN {FS ="\t"}; {if($7 == 1)print $1"\t"$2"\t"$8}' > p19606.tsv
+cat phenome_RUH2202.tsv | awk 'BEGIN {FS ="\t"}; {if($7 == 1)print $1"\t"$2"\t"$8}' > pRUH2202.tsv
+
+# Get those wells active in 19606 but not in RUH2202
+paste p19606.tsv pRUH2202.tsv | awk 'BEGIN {FS = "\t"}; {if($3 >= 2.5 && $6 < 2.5) print $1"\t"$2}' > 19606_vs_RUH2202.txt
+
+# Compare with published data
+./check Table_S3.txt 19606_vs_RUH2202.txt

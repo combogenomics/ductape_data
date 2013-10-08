@@ -45,9 +45,9 @@ dphenome stats -a 3 -d 2 > phenome_stats.tsv
 dphenome export
 
 # Pathway maps
-dape map -d 3
+dape map -d 2
 dape map -a
 
 # Combined genomic/phenomic analysis
-dape start -n 4 -p -t 2
+dape start -p -t 2
 dape start -a -p -t 2

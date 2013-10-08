@@ -1,0 +1,55 @@
+PM20 Orphenadrine
+PM20 Pridinol
+PM17 2-Hydroxybenzoic acid
+PM13 2,2′-Dipyridyl
+PM20 8-Hydroxyquinoline
+PM12 Novobiocin
+PM16 Chloroxylenol
+PM16 Dichlofluanid
+PM20 Tolylfluanid
+PM17 D-Serine
+PM20 Dodine
+PM15 Guanidine hydrochloride
+PM17 Niaproof
+PM12 Benzethonium chloride
+PM16 Cetylpyridinium chloride
+PM12 Dodecyltrimethyl ammonium bromide
+PM19 Lauryl sulfobetaine
+PM15 Alexidine
+PM20 Amitriptyline
+PM20 Captan
+PM14 Iodoacetate
+PM16 1-Chloro-2,4-dinitrobenzene
+PM19 D,L-Thioctic acid
+PM15 3,4-Dimethoxybenzyl alcohol
+PM17 Chlorpromazine
+PM14 Promethazine
+PM13 Trifluoperazine
+PM19 Phenyl-methyl-sulfonyl-fluoride (PMSF)
+PM11 Chlortetracycline
+PM11 Demeclocyline
+PM11 Minocycline
+PM19 Josamycin
+PM15 Oleandomycin
+PM15 Fusidic acid
+PM20 3,5-Dinitrobenzene
+PM19 Cinnamic acid
+PM19 Gallic acid
+PM19 Sodium caprylate
+PM20 Tetrazolium Violet
+PM20 Thioridazine
+PM17 Oxycarboxin PM14 Boric acid
+PM13 Potassium chromate
+PM18 Sodium bromate
+PM18 Sodium m-arsenite
+PM14 Sodium nitrite
+PM16 Sodium selenite
+PM18 Sodium periodate
+PM14 Sodium Dichromate
+PM14 Cadmium chloride
+PM13 Cobalt chloride
+PM13 Cupric chloride
+PM17 Lithium chloride
+PM13 Nickel chloride
+PM17 Phenylarsine oxide
+PM19 Phenethicillin

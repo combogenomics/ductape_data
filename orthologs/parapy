@@ -1,0 +1,153 @@
+#!/usr/bin/python
+
+usage = """
+	parapy INPUT_FOLDER INPARANOID_FOLDER NUM_CPUS
+"""
+#######################
+
+import os,sys,itertools,multiprocessing,shutil
+
+#######################
+
+def cpy_inparanoid(thread_dir,inparanoid_bin):
+	files=os.listdir(inparanoid_bin)
+	for f in files:
+		f=inparanoid_bin+f
+		shutil.copy(f,thread_dir)
+
+def get_all_pairs(proteomes):
+	pairs=itertools.combinations(proteomes, 2)
+	return pairs
+
+def launch_inparanoid(genome1,genome2,dir_):
+	os.system('inparanoid.pl %s %s' %(self.g1,self.g2))
+	return 
+
+def clear_all(thread_dir):
+	for f in os.listdir(thread_dir):
+		os.remove(f)
+
+def get_outs(thread_dir):
+	outs=[out for out in os.listdir(thread_dir) if
+		  (out.startswith('Output.') or out.startswith('sqltable.')
+		or out.startswith('table.')   or out.startswith('orthologs.'))]
+	return outs
+#######################
+
+class Consumer(multiprocessing.Process):
+    
+    def __init__(self, task_queue, result_queue, main='.'):
+        multiprocessing.Process.__init__(self)
+        self.task_queue = task_queue
+        self.result_queue = result_queue
+        self.main=main
+
+    def run(self):
+        proc_name = self.name
+        while True:
+            next_task = self.task_queue.get()
+            if next_task is None:
+                # Poison pill means shutdown
+                print '%s: Exiting' % proc_name
+                self.task_queue.task_done()
+                break
+            print '%s: %s' % (proc_name, next_task)
+            next_task.main=self.main # main directory (where result are stored)
+            next_task.sub=proc_name # subdirectory name (same as consumer name)
+            answer = next_task() # store result of task
+            self.task_queue.task_done()
+            self.result_queue.put(answer)
+        return
+
+class InparanoidTask(object):
+	#
+	def __init__(self,genome1,genome2,dir_,inpdir,name='Parapy_task'):
+		self.name=name
+		self.dir_=dir_
+		self.inpdir=inpdir
+		self.g1=genome1
+		self.g2=genome2
+		self.main=''
+		self.sub =''
+	#
+	def __call__(self):
+		print 'tasking %s %s' %(self.g1,self.g2)
+		# what to do for each task:
+		#
+
+		# 1) if it doesn't exist, creat a subdir
+		if not os.path.exists(self.sub):
+			os.mkdir(self.sub)
+
+		# 2) copy the files in it
+		src1=self.dir_+self.g1
+		src2=self.dir_+self.g2
+		dst=self.sub
+		inpdir=self.inpdir
+		shutil.copy(src1,dst)
+		shutil.copy(src2,dst)
+		cpy_inparanoid(dst,inpdir)
+
+		# 3) move into it and launch Inparanoid
+		os.chdir(dst)
+
+		try: os.system('./inparanoid.pl %s %s' %(self.g1,self.g2))
+		except: print '\n\n\n ERORE \n\n\n'
+
+		# 4) move outputs into main and clean
+		outputs=get_outs('.')
+		for out in outputs: shutil.copy(out,'..')
+		clear_all('.')
+		os.chdir('..')
+
+		# 5) print success, you've done it right son!
+		print "successfully inparanoid'd %s , %s" %(self.g1,self.g2)
+		# blablabla
+
+#######################
+
+if len(sys.argv) < 4:
+	print usage
+	sys.exit(1)
+
+genome_dir, inpdir, num_consumers = sys.argv[1:4]
+
+#######################
+
+num_consumers=int(num_consumers)
+# num_consumers = multiprocessing.cpu_count() * 2
+main='.'
+
+if __name__ == '__main__':
+
+	# Instance QueriesQueue with genome directory 
+	Q=multiprocessing.JoinableQueue() # make queue
+	Q.dir_=genome_dir # set directory with genomes
+	Q.genomes=os.listdir(Q.dir_) # list of genomes to analyze
+
+	# Instance ResultsQueue
+	R=multiprocessing.Queue()
+
+	# Start consumers
+	consumers = [Consumer(Q, R)
+					for i in xrange(num_consumers)]
+	print '%s processes running:\n%s' %(num_consumers,'\n'.join([c.name for c in consumers]))
+	for w in consumers:
+		w.start()
+
+	# Enqueue tasks
+	for p in get_all_pairs(Q.genomes):
+		Q.put(InparanoidTask(p[0],p[1],Q.dir_,inpdir))
+
+	# Add a poison pill for each consumer
+	for i in xrange(num_consumers):
+		Q.put(None)
+
+
+	Q.join()
+
+	# Wait for all of the tasks to finish
+	while not Q.empty():
+		Q.get()
+
+#######################
