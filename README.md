@@ -7,7 +7,7 @@ All the necessary input data are provided, as well as a detailed script to run e
 Requirements
 ------------
 
-* DuctApe v0.16.2 or later
+* DuctApe v0.16.4 or later
 
 * OrthoMCL
 
