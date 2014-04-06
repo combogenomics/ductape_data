@@ -12,19 +12,19 @@ dgenome add-ko kegg/ZM4.tab
 dgenome start
 
 # Statistics and exports
-dgenome stats > genome_stats.tsv
+dgenome stats
 dgenome export
 
 # Add the phenomic data
 dphenome add-dir phenome
 
 # Control signal subtraction
-dphenome zero
+#dphenome zero
 
 # Parameters calculation and Elbow test to decide the value of k
 dphenome start -e -g
 # AV/parameters calculation (k=5)
-dphenome start -f -n 6
+dphenome start -f -n 6 -g
 
 # Curve plots
 dphenome plot
@@ -34,13 +34,13 @@ dphenome rings
 
 # Statistics and exports (including YAML files) 
 dphenome stats -a 3 -d 2 > phenome_stats.tsv
-dphenome export
+dphenome export -j
 
 # Pathway maps
 dape map
 
 # Combined genomic/phenomic analysis
-dape start -p -t 2
+dape start -s -t 2
 
 # List the compounds with AV >= 3
 cat phenome_avg_ZM4.tsv | awk 'BEGIN {FS = "\t"}; {if ($7 >= 3) print $1"\t"$2"\t"$3"\t"$4"\t"$7}' > ZM4_res.tsv

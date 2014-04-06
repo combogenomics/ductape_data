@@ -12,13 +12,13 @@ dgenome add-dir genome/
 dgenome add-ko kegg/AK58.tab kegg/AK83.tab kegg/Rm1021.tab kegg/BL225C.tab
 
 # Pangenome estimation/KEGG mapping
-dgenome start -n 4 -p SinMel_
+dgenome start -n 4 -x SinMel_
 
 # Annotate the orthologs w/o KEGG IDs
 dgenome annotate
 
 # Statistics and exports
-dgenome stats > genome_stats.tsv
+dgenome stats
 dgenome export
 
 # Add the phenomic data
@@ -41,7 +41,7 @@ mv ActivityRing.png ActivityOverall.png
 dphenome rings -o Rm1021 -d 2
 
 # Statistics and exports (including YAML files) 
-dphenome stats -a 3 -d 2 > phenome_stats.tsv
+dphenome stats -a 3 -d 2
 dphenome export
 
 # Pathway maps
@@ -49,5 +49,5 @@ dape map -d 2
 dape map -a
 
 # Combined genomic/phenomic analysis
-dape start -p -t 2
-dape start -a -p -t 2
+dape start -s -t 2
+dape start -a -s -t 2

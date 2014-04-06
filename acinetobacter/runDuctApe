@@ -12,13 +12,13 @@ dgenome add-dir genome/
 dgenome add-ko kegg/*.tab
 
 # Pangenome estimation/KEGG mapping
-dgenome start -n 4 -p Acin_
+dgenome start -n 4 -x Acin_
 
 # Annotate the orthologs w/o KEGG IDs
 dgenome annotate
 
 # Statistics and exports
-dgenome stats > genome_stats.tsv
+dgenome stats
 dgenome export
 
 # Add the phenomic data
@@ -43,7 +43,7 @@ mv ActivityRing.png ActivityOverall.png
 dphenome rings -o 19606 -d 2
 
 # Statistics and exports (including YAML files) 
-dphenome stats -a 3 -d 2 > phenome_stats.tsv
+dphenome stats -a 3 -d 2
 dphenome export
 
 # Pathway maps
@@ -51,8 +51,8 @@ dape map -d 3
 dape map -a
 
 # Combined genomic/phenomic analysis
-dape start -p -t 2.5
-dape start -a -p -t 2.5
+dape start -s -t 2.5
+dape start -a -s -t 2.5
 
 # Get the first replica activity to compare with published data
 cat phenome_19606.tsv | awk 'BEGIN {FS ="\t"}; {if($7 == 1)print $1"\t"$2"\t"$8}' > p19606.tsv
